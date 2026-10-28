@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>初识HTML与CSS - 我的博客</title>
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="article.css">
+    <link rel="stylesheet" href="media-query.css">
+</head>
+
+<body>
+    <!-- 复用主页的页头、导航、页脚 HTML 结构 -->
+    <header class="site-header">
+        <div class="header-row">
+            <h1 class="site-title">我的博客</h1>
+            <input type="checkbox" id="menu-toggle" class="menu-toggle">
+            <label for="menu-toggle" class="mobile-menu">菜单</label>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="index.html#articles">文章</a></li>
+                    <li><a href="index.html#about">关于我</a></li>
+                </ul>
+            </nav>
+        </div>
+        <p class="tagline">记录学习与生活</p>
+    </header>
+
+    <main class="article-page">
+        <a href="index.html" class="back-link">← 返回首页</a>
+
+        <article class="article-content">
+            <h2>初识HTML与CSS</h2>
+            <p class="article-meta">发布日期：2026-09-28 | 分类：前端开发</p>
+
+            <p>HTML 和 CSS 是构建网页的两大基础技术。HTML（HyperText Markup Language，超文本标记语言）负责定义网页的结构和内容，而 CSS（Cascading Style Sheets，层叠样式表）则负责控制网页的表现和样式。</p>
+
+            <h3>一、HTML 是什么</h3>
+            <p>HTML 使用一系列标签来描述网页的结构。例如，使用 h1 到 h6 标签定义标题，使用 p 标签定义段落，使用 a 标签定义超链接。浏览器会解析这些标签，并将它们渲染成我们看到的网页内容。</p>
+
+            <h3>二、CSS 是什么</h3>
+            <p>CSS 用于描述 HTML 元素的显示方式。通过 CSS，我们可以设置文字的颜色、大小、字体，元素的背景、边框、间距，以及页面的整体布局。CSS 让网页变得美观且具有可读性。</p>
+
+            <h3>三、HTML 与 CSS 的关系</h3>
+            <p>HTML 是网页的骨架，CSS 是网页的外衣。两者配合使用，才能制作出结构清晰、样式美观的网页。在实际开发中，我们通常将 HTML 和 CSS 分离，HTML 写结构，CSS 写样式，这样代码更易维护。</p>
+
+            <h3>四、学习建议</h3>
+            <p>初学者应先掌握 HTML 的常用标签，理解页面的语义化结构；然后学习 CSS 的选择器、盒模型和布局方式。多写多练，通过制作简单的网页来巩固所学知识。</p>
+
+            <p>总之，HTML 和 CSS 是前端开发的基石，打好基础才能在后续的学习中游刃有余。</p>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 我的博客</p>
+    </footer>
+</body>
+
+</html>

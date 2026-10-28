@@ -1,0 +1,51 @@
+/* media-query.css - 响应式媒体查询（选做）
+ * 屏幕宽度小于等于 768px 时生效。
+ */
+
+@media (max-width: 768px) {
+
+    /* 主页双栏布局改为单栏，侧边栏放到下方 */
+    .content {
+        flex-direction: column;
+    }
+
+    .articles-section,
+    .sidebar {
+        width: 100%;
+    }
+
+    /* 小屏显示移动端折叠菜单按钮 */
+    .mobile-menu {
+        display: block;
+        background-color: #555;
+        padding: 6px 12px;
+        border-radius: 4px;
+    }
+
+    /* 小屏隐藏原有横向导航 */
+    .main-nav {
+        display: none;
+        width: 100%;
+    }
+
+    /* 复选框选中时展开导航（纯 CSS 实现折叠菜单） */
+    .menu-toggle:checked ~ .main-nav {
+        display: block;
+    }
+
+    /* 小屏导航改为纵向排列 */
+    .main-nav .nav-list {
+        flex-direction: column;
+        margin-top: 10px;
+    }
+
+    .main-nav .nav-list li {
+        margin-left: 0;
+        margin-bottom: 5px;
+    }
+
+    /* 页头允许换行，适配纵向布局 */
+    .header-row {
+        flex-wrap: wrap;
+    }
+}

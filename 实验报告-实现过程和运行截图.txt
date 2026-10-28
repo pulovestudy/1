@@ -1,0 +1,181 @@
+实现过程和运行截图
+================================================================
+
+一、页面架构设计
+
+本实验在原有静态博客主页上做功能扩展，遵循「结构—表现—行为」分离：HTML 负责结构，CSS 负责样式，JavaScript 负责交互与数据。
+
+页面主要由 index.html、reset.css（样式重置）、base.css（全局基础样式）、common.css（公共组件与换肤主题）、media-query.css（响应式）、article.html + article.css（文章详情页）组成，本次新增 script.js 作为交互脚本，所有交互逻辑（换肤、文章动态加载与搜索、注册校验、留言保存与读取）都集中在该文件中，页面通过 <script src="script.js"></script> 引入。
+
+主页采用语义化标签搭建：<header> 页头（内含 <h1>、<nav>→<ul>→<li>→<a>、以及新增的「更换皮肤」<button>）；<main> 主体下分左右两栏——左栏 <section> 包含文章标题、搜索框、文章数量、文章容器 <div id="post-list"> 和技能表格 <table>；右栏 <aside> 包含关于我 <section>（<figure>+<img>+<figcaption>）、分类与标签列表；主体下方新增留言板 <section id="message"> 与注册表单 <section id="register">；最后是 <footer> 页脚。
+
+整体布局统一由 display: flex 完成，实现页头两端对齐与 65% / 35% 的双栏结构：
+
+    .header-row { display: flex; justify-content: space-between; }  /* 页头：标题—导航—按钮 */
+    .content    { display: flex; gap: 20px; }                      /* 主体：左文章 65% + 右侧栏 35% */
+
+【图 1-1：博客主页整体效果（浅色主题）】
+截图说明：打开 http://localhost:3000/ ，截取完整页面，需看清页头按钮、搜索框、文章列表、技能表格、侧边栏、留言板与注册表单。
+
+
+二、鼠标事件：换肤功能
+
+在页头新增 <button id="skin-btn">更换皮肤</button>。浅色样式来自全局设置，深色样式在 common.css 中用 body.dark 类选择器配合后代选择器统一定义，一次性覆盖页面背景、卡片底色与边框、文字和链接颜色：
+
+    body.dark { background-color: #1e1e1e; color: #ddd; }
+    body.dark .post-card,
+    body.dark .sidebar section { background-color: #2b2b2b; border-color: #444; }
+    body.dark a { color: #6cb6ff; }
+
+脚本中先查找按钮，再绑定鼠标单击事件，回调里用 classList.toggle() 切换 <body> 的类名：
+
+    document.getElementById('skin-btn').addEventListener('click', function () {
+        document.body.classList.toggle('dark');
+    });
+
+核心思路是把「主题状态」收敛为一个类名：JS 只切换类名，配色全部交给 CSS，做到行为与样式分离，代码最少也最易扩展（日后加多套皮肤只需再定义新的类名）。
+
+【图 2-1：浅色主题下的页面】
+【图 2-2：单击「更换皮肤」后的深色主题页面】
+截图说明：两张图取同一区域（如页头到文章列表），对比背景、卡片底色、文字与链接颜色的变化。
+
+
+三、表单事件：注册页面与正则式输入验证
+
+注册区使用 <form id="reg-form"> 承载，内部用 <label for> 关联四个 <input>：用户名（text）、邮箱（text）、密码与确认密码（password），并配一个提示用的 <p id="reg-msg"> 和提交按钮。
+
+三字段的正则规则设计如下：
+
+    用户名：^[\u4e00-\u9fa5a-zA-Z0-9_]{2,12}$   2~12 位，只能是中文、字母、数字或下划线
+    邮箱：  ^\w+([.-]\w+)*@\w+([.-]\w+)*\.\w+$  标准邮箱格式，形如 abc@mail.com
+    密码：  ^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,16}$  6~16 位，且必须同时包含字母和数字
+
+其中中文用 [\u4e00-\u9fa5] 匹配；密码的「同时含字母和数字」用前瞻断言 (?=.*[a-zA-Z])(?=.*\d) 实现——它只做条件判断、不消耗字符；^ 与 $ 保证整体匹配。
+
+事件绑定在表单的 submit 上（这样点击按钮和回车提交都能捕获）。回调中先用 preventDefault() 阻止表单默认提交、避免页面刷新，再按顺序校验；任一不通过就把错误提示写入 #reg-msg 并立即返回：
+
+    regForm.addEventListener('submit', function (e) {
+        e.preventDefault();                       // 阻止默认提交，避免页面刷新
+        if (name === '') { regMsg.textContent = '用户名不能为空'; return; }
+        if (!nameReg.test(name)) { regMsg.textContent = '用户名格式不正确'; return; }
+        if (!emailReg.test(email)) { regMsg.textContent = '邮箱格式不正确'; return; }
+        if (!pwdReg.test(pwd)) { regMsg.textContent = '密码需为6~16位，且同时包含字母和数字'; return; }
+        if (pwd !== pwd2) { regMsg.textContent = '两次输入的密码不一致'; return; }
+        console.log('注册表单数据：', { name: name, email: email, password: pwd });
+        regForm.reset();
+    });
+
+输入值统一用 trim() 去掉首尾空格；全部通过后用 console.log() 把表单数据以对象形式输出到控制台（满足“控制台输出表单数据”的要求），并调用 reset() 清空表单。
+
+【图 3-1：用户名格式不合法时的红色错误提示】
+【图 3-2：邮箱格式不正确时的提示】
+【图 3-3：两次密码不一致时的提示】
+【图 3-4：校验全部通过，显示「注册成功！」且表单被清空】
+【图 3-5：控制台打印出的注册表单数据对象】
+截图说明：图 3-5 按 F12 → Console 面板，提交一次合法数据后截图。
+
+
+四、DOM 操作：博客主页内容的动态生成
+
+原先写死在 HTML 里的三篇文章，本次改为在脚本中用模拟数据数组描述，HTML 中只保留两个容器：文章数量 <p id="post-count"> 和文章列表 <div id="post-list">：
+
+    var posts = [
+        { title: '初识HTML与CSS', date: '2026-09-28', summary: '……', link: 'article.html' },
+        { title: '前端学习之路',   date: '2026-10-02', summary: '……', link: 'article.html' }
+    ];
+
+渲染逻辑封装成一个函数，传入数组即可完成三件事——统计数量、清空旧节点、生成新节点，并处理空数据：
+
+    function renderPosts(list) {
+        postCount.textContent = '共 ' + list.length + ' 篇文章';   // 计算并显示数量
+        postList.innerHTML = '';                                   // 删除：清空旧节点
+        if (list.length === 0) {                                   // 空数据处理
+            postList.innerHTML = '<p class="empty-tip">没有找到符合条件的文章</p>';
+            return;
+        }
+        list.forEach(function (post) {                             // 循环创建节点
+            var article = document.createElement('article');       // 增：创建元素
+            article.className = 'post-card';
+            article.innerHTML = '<h3>' + post.title + '</h3>' + '<p>' + post.summary + '</p>';
+            postList.appendChild(article);                         // 增：插入容器
+        });
+    }
+    renderPosts(posts);                                            // 页面加载后首次渲染
+
+涉及的 DOM 操作方法汇总：
+    增 —— createElement() 创建 <article>，appendChild() 插入到 #post-list
+    删 —— postList.innerHTML = '' 一次性清空旧节点，避免重复追加
+    改 —— textContent 改数量，innerHTML 改卡片结构，className 改样式类
+
+搜索与重置：用 filter() 在标题和摘要中做关键词匹配，把结果交给同一个渲染函数复用；重置则清空输入框并渲染全部数据。搜索结果为空时自动触发上面的空状态提示——这正是「数据驱动渲染」：修改的是数据，DOM 由渲染函数统一生成。
+
+    var result = posts.filter(function (post) {
+        return post.title.indexOf(keyword) !== -1 || post.summary.indexOf(keyword) !== -1;
+    });
+    renderPosts(result);
+
+【图 4-1：页面加载后动态生成的文章列表，显示「共 3 篇文章」】
+【图 4-2：搜索「CSS」后的查询结果与数量变化】
+【图 4-3：搜索不存在的关键词时显示的空状态提示】
+【图 4-4：点击「重置」后恢复全部文章】
+
+
+五、本地存储：博客留言信息的保存和读取
+
+留言板用 <form id="msg-form"> 收集数据，昵称用 <input>、留言内容用 <textarea>（便于多行输入），下方用 <p id="msg-count"> 显示数量、<ul id="msg-list"> 作为列表容器。
+
+存储使用浏览器提供的 localStorage（本地缓存），它有两个常用方法：localStorage.setItem(key, value) 用于保存或修改数据，localStorage.getItem(key) 用于读取数据。由于 localStorage 只能保存字符串，而留言是「对象数组」，因此需要借助 JSON 对象做转换：写入前用 JSON.stringify() 把对象/数组转成 JSON 字符串，读取后用 JSON.parse() 把字符串还原成对象/数组。为了便于复用，把这两个读写动作封装成一对简易工具函数：
+
+    // 写本地缓存：对象/数组 -> JSON 字符串
+    function saveToLocal(key, value) {
+        localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    // 读本地缓存：JSON 字符串 -> 对象/数组
+    function getFromLocal(key) {
+        return JSON.parse(localStorage.getItem(key));
+    }
+
+保存（提交留言）：表单绑定 submit 事件，先用 preventDefault() 阻止页面刷新；再校验昵称和内容非空；然后取出已有的全部留言、追加一条新记录（自动带上提交时间），最后整体写回本地缓存并重新渲染：
+
+    var list = getFromLocal(MSG_KEY) || [];   // 先读取已有的全部留言
+    list.push({ name: name, text: text, time: new Date().toLocaleString() });
+    saveToLocal(MSG_KEY, list);               // 再整体写回本地缓存
+    renderMessages(list);
+    msgForm.reset();
+
+读取与显示：页面加载时调用 loadMessages()，用 getFromLocal 从缓存中取出数组（没有数据时按空数组处理）交给渲染函数。渲染函数先统计并显示留言数量，再清空列表，然后用 forEach 为每条留言创建一个 <li>（内含昵称、时间、内容）追加进去，因此有多少条就渲染多少条，多条留言全部显示：
+
+    function loadMessages() {
+        renderMessages(getFromLocal(MSG_KEY) || []);
+    }
+
+    function renderMessages(list) {
+        msgCount.textContent = '共有 ' + list.length + ' 条留言';
+        msgList.innerHTML = '';
+        list.forEach(function (msg) {
+            var li = document.createElement('li');
+            li.innerHTML = '<strong>' + msg.name + '</strong><p>' + msg.text + '</p>';
+            msgList.appendChild(li);
+        });
+    }
+
+数据缓存说明：全部留言以 JSON 字符串的形式保存在 localStorage 中，键名为 blog_messages，属于浏览器本地缓存，关闭浏览器后仍然存在；因此刷新页面或重新打开页面，历史留言都会被完整还原并重新统计数量。
+
+【图 5-1：留言板初始状态（0 条留言）】
+【图 5-2：填写昵称与内容后点击提交】
+【图 5-3：提交成功后显示「共有 1 条留言」及留言内容】
+【图 5-4：连续提交多条后，页面完整显示多条留言与最新数量】
+【图 5-5：开发者工具 Application（应用）面板中 localStorage 保存的留言数据】
+【图 5-6：刷新页面后留言依然存在（验证持久化）】
+截图说明：图 5-5 按 F12 打开开发者工具 → Application → Storage → Local Storage → 选择当前页面，需能看到键名为 blog_messages、值为 JSON 字符串的留言数据。
+
+
+六、运行环境与验证
+
+本项目为纯前端实现，不依赖任何后端服务，直接双击 index.html 用浏览器打开即可运行（也可通过 VS Code 的 Live Server 等本地服务器打开），换肤、文章动态加载与搜索、注册校验、留言的保存与读取全部在浏览器端完成。
+
+留言数据保存在浏览器的 localStorage 中，属于浏览器本地缓存，同一浏览器同一地址下可长期保留；若需清空演示数据，可在开发者工具的 Application 面板中删除键名为 blog_messages 的记录。测试环境为 Chrome 浏览器。
+
+【图 6-1：浏览器打开 index.html 的页面效果（浅色主题）】
+【图 6-2：浏览器控制台 Console 中提交注册表单后输出的数据对象】

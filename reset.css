@@ -1,0 +1,60 @@
+/* reset.css - 样式重置
+ * 注意：不使用 *{margin:0;padding:0} 这种粗暴方式，
+ * 而是对具体元素进行针对性重置。
+ */
+
+/* 盒模型统一为 border-box，便于计算宽高 */
+html {
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+/* 清除 body 默认外边距 */
+body {
+    margin: 0;
+}
+
+/* 清除标题默认外边距 */
+h1,
+h2,
+h3 {
+    margin: 0;
+}
+
+/* 清除段落默认外边距 */
+p {
+    margin: 0;
+}
+
+/* 清除列表默认外边距、内边距与项目符号 */
+ul,
+ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* 表单元素字体继承父元素 */
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+/* 图片块级显示，最大宽度不超出容器 */
+img {
+    display: block;
+    max-width: 100%;
+}
+
+/* 表格边框合并 */
+table {
+    border-collapse: collapse;
+}

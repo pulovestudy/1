@@ -1,0 +1,59 @@
+/* article.css - 博客文章内容页专属样式
+ * 仅作用于 article.html 的文章正文区域。
+ */
+
+/* 文章页主体容器 */
+.article-page {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+/* 返回首页链接 */
+.back-link {
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+/* 文章卡片样式 */
+.article-content {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 25px;
+}
+
+/* 文章标题 */
+.article-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* 文章元信息（日期、分类） */
+.article-meta {
+    color: #666;
+    font-size: 0.875rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 文章正文段落：首行缩进 */
+.article-content p {
+    margin-bottom: 15px;
+    text-indent: 2em;
+}
+
+/* 文章正文中的小标题 */
+.article-content h3 {
+    font-size: 1.125rem;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* 文章中的图片 */
+.article-content img {
+    margin: 15px auto;
+    border-radius: 4px;
+}

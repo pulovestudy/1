@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人博客</title>
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="media-query.css">
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="header-row">
+            <h1 class="site-title">我的博客</h1>
+            <input type="checkbox" id="menu-toggle" class="menu-toggle">
+            <label for="menu-toggle" class="mobile-menu">菜单</label>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="#articles">文章</a></li>
+                    <li><a href="#about">关于我</a></li>
+                    <li><a href="#message">留言</a></li>
+                </ul>
+            </nav>
+            <button id="skin-btn" class="skin-btn">更换皮肤</button>
+        </div>
+        <p class="tagline">记录学习与生活</p>
+    </header>
+
+    <main class="container">
+        <div class="content">
+            <section class="articles-section" id="articles">
+                <h2>最新文章</h2>
+
+                <!-- 搜索框：输入关键词查询文章，可一键重置 -->
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="输入关键词搜索文章">
+                    <button id="search-btn">搜索</button>
+                    <button id="reset-btn" class="reset-btn">重置</button>
+                </div>
+
+                <!-- 文章数量统计 -->
+                <p id="post-count" class="post-count"></p>
+
+                <!-- 文章列表由 script.js 动态加载 -->
+                <div id="post-list"></div>
+
+                <section class="skills-section">
+                    <h2>技能掌握情况</h2>
+                    <table class="skills-table">
+                        <tr>
+                            <th>技术</th>
+                            <th>熟悉程度</th>
+                        </tr>
+                        <tr>
+                            <td>HTML</td>
+                            <td>熟悉</td>
+                        </tr>
+                        <tr>
+                            <td>CSS</td>
+                            <td>基础</td>
+                        </tr>
+                        <tr>
+                            <td>JavaScript</td>
+                            <td>学习中</td>
+                        </tr>
+                    </table>
+                </section>
+            </section>
+
+            <aside class="sidebar">
+                <section id="about">
+                    <h2>关于我</h2>
+                    <figure class="avatar-figure">
+                        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%234a90d9'/%3E%3C/svg%3E"
+                            alt="头像">
+                        <figcaption>小明同学</figcaption>
+                    </figure>
+                    <p>一名大学生，正在学习Web前端开发。</p>
+                </section>
+
+                <section>
+                    <h2>文章分类</h2>
+                    <ul class="category-list">
+                        <li><a href="#">前端开发</a></li>
+                        <li><a href="#">学习笔记</a></li>
+                        <li><a href="#">生活随笔</a></li>
+                        <li><a href="#">技术分享</a></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>标签</h2>
+                    <ul class="tags">
+                        <li><a href="#">HTML5</a></li>
+                        <li><a href="#">CSS3</a></li>
+                        <li><a href="#">Flex</a></li>
+                        <li><a href="#">语义化</a></li>
+                    </ul>
+                </section>
+            </aside>
+        </div>
+
+        <!-- 留言板：提交后由 script.js 保存到本地，并显示全部留言与数量 -->
+        <section class="message-section" id="message">
+            <h2>留言板</h2>
+            <form id="msg-form">
+                <p class="form-row">
+                    <input type="text" id="msg-name" placeholder="你的昵称">
+                </p>
+                <p class="form-row">
+                    <textarea id="msg-text" placeholder="写下你的留言"></textarea>
+                </p>
+                <button type="submit">提交留言</button>
+            </form>
+            <p id="msg-count" class="msg-count"></p>
+            <ul id="msg-list"></ul>
+        </section>
+
+        <!-- 注册表单：由 script.js 完成用户名、邮箱、两次密码一致性校验 -->
+        <section class="register-section" id="register">
+            <h2>用户注册</h2>
+            <form id="reg-form">
+                <p class="form-row"><label for="reg-name">用户名：</label><input type="text" id="reg-name"></p>
+                <p class="form-row"><label for="reg-email">邮箱：</label><input type="text" id="reg-email"></p>
+                <p class="form-row"><label for="reg-pwd">密码：</label><input type="password" id="reg-pwd"></p>
+                <p class="form-row"><label for="reg-pwd2">确认密码：</label><input type="password" id="reg-pwd2"></p>
+                <p id="reg-msg" class="form-msg"></p>
+                <button type="submit">注册</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 我的博客</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
