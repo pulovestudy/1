@@ -9,136 +9,246 @@
     <link rel="stylesheet" href="base.css">
     <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="media-query.css">
+    <link rel="stylesheet" href="article.css">
+    <!-- ✅恢复引入Vue3 CDN，实验要求固定版本 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.5.44/dist/vue.global.js"></script>
 </head>
 
 <body>
-    <header class="site-header">
-        <div class="header-row">
-            <h1 class="site-title">我的博客</h1>
-            <input type="checkbox" id="menu-toggle" class="menu-toggle">
-            <label for="menu-toggle" class="mobile-menu">菜单</label>
-            <nav class="main-nav">
-                <ul class="nav-list">
-                    <li><a href="index.html">首页</a></li>
-                    <li><a href="#articles">文章</a></li>
-                    <li><a href="#about">关于我</a></li>
-                    <li><a href="#message">留言</a></li>
-                </ul>
-            </nav>
-            <button id="skin-btn" class="skin-btn">更换皮肤</button>
-        </div>
-        <p class="tagline">记录学习与生活</p>
-    </header>
+    <!-- ✅Vue挂载根容器，所有模板内容必须包在id="app"内部 -->
+    <div id="app">
+        <header class="site-header">
+            <div class="header-row">
+                <h1 class="site-title">我的博客</h1>
+                <input type="checkbox" id="menu-toggle" class="menu-toggle">
+                <label for="menu-toggle" class="mobile-menu">菜单</label>
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="#articles">文章</a></li>
+                        <li><a href="#about">关于我</a></li>
+                        <li><a href="#message">留言</a></li>
+                    </ul>
+                </nav>
+                <button id="skin-btn" class="skin-btn">更换皮肤</button>
+            </div>
+            <p class="tagline">记录学习与生活</p>
+        </header>
 
-    <main class="container">
-        <div class="content">
-            <section class="articles-section" id="articles">
-                <h2>最新文章</h2>
+        <main class="container">
+            <div class="content">
+                <section class="articles-section" id="articles">
+                    <h2>最新文章</h2>
 
-                <!-- 搜索框：输入关键词查询文章，可一键重置 -->
-                <div class="search-box">
-                    <input type="text" id="search-input" placeholder="输入关键词搜索文章">
-                    <button id="search-btn">搜索</button>
-                    <button id="reset-btn" class="reset-btn">重置</button>
-                </div>
+                    <div class="search-box">
+                        <label for="search-input">标题关键词</label>
+                        <input id="search-input" v-model="keyword" type="search" placeholder="输入关键词搜索文章">
+                        <button class="reset-btn" @click="resetSearch">重置筛选</button>
+                        <p>当前关键词：{{ keyword }}</p>
+                    </div>
 
-                <!-- 文章数量统计 -->
-                <p id="post-count" class="post-count"></p>
+                    <!--文章数量统计 Vue插值语法 -->
+                    <p id="post-count" class="post-count" role="status">
+                        显示 {{ filteredArticles.length }} / 共 {{ articles.length }} 篇文章
+                    </p>
+                    <!--没有匹配结果提示-->
+                    <p v-if="filteredArticles.length === 0">
+                        没有找到相关文章，请更换关键词。
+                    </p>
 
-                <!-- 文章列表由 script.js 动态加载 -->
-                <div id="post-list"></div>
+                    <!--v-for循环渲染文章列表-->
+                    <div id="post-list">
+                        <div v-for="article in filteredArticles" :key="article.id" class="post-card">
+                            <div class="post-date"><time>{{ article.date }}</time></div>
+                            <h3>{{ article.title }}</h3>
+                            <p>{{ article.summary }}</p>
+                        </div>
+                    </div>
 
-                <section class="skills-section">
-                    <h2>技能掌握情况</h2>
-                    <table class="skills-table">
-                        <tr>
-                            <th>技术</th>
-                            <th>熟悉程度</th>
-                        </tr>
-                        <tr>
-                            <td>HTML</td>
-                            <td>熟悉</td>
-                        </tr>
-                        <tr>
-                            <td>CSS</td>
-                            <td>基础</td>
-                        </tr>
-                        <tr>
-                            <td>JavaScript</td>
-                            <td>学习中</td>
-                        </tr>
-                    </table>
+
+                    <section class="skills-section">
+                        <h2>技能掌握情况</h2>
+                        <table class="skills-table">
+                            <tr>
+                                <th>技术</th>
+                                <th>熟悉程度</th>
+                            </tr>
+                            <tr>
+                                <td>HTML</td>
+                                <td>熟悉</td>
+                            </tr>
+                            <tr>
+                                <td>CSS</td>
+                                <td>基础</td>
+                            </tr>
+                            <tr>
+                                <td>JavaScript</td>
+                                <td>学习中</td>
+                            </tr>
+                        </table>
+                    </section>
                 </section>
+
+                <aside class="sidebar">
+                    <section id="about">
+                        <h2>关于我</h2>
+                        <figure class="avatar-figure">
+                            <img src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%234a90d9'/%3E%3C/svg%3E"
+                                alt="头像">
+                            <figcaption>小明同学</figcaption>
+                        </figure>
+                        <p>一名大学生，正在学习Web前端开发。</p>
+                    </section>
+
+                    <section>
+                        <h2>文章分类</h2>
+                        <ul class="category-list">
+                            <li><a href="#">前端开发</a></li>
+                            <li><a href="#">学习笔记</a></li>
+                            <li><a href="#">生活随笔</a></li>
+                            <li><a href="#">技术分享</a></li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>标签</h2>
+                        <ul class="tags">
+                            <li><a href="#">HTML5</a></li>
+                            <li><a href="#">CSS3</a></li>
+                            <li><a href="#">Flex</a></li>
+                            <li><a href="#">语义化</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+
+            <!--留言板 Vue重构 -->
+            <section class="message-section" id="message">
+                <h2>留言板</h2>
+                <form @submit.prevent="addMessage">
+                    <p class="form-row">
+                        <label for="msg-name">昵称 (1~20字)</label>
+                        <input id="msg-name" ref="nicknameInput" v-model="nickname" type="text" placeholder="你的昵称">
+                    </p>
+                    <p class="form-row">
+                        <label for="msg-text">留言内容 (1~300字)</label>
+                        <textarea id="msg-text" v-model="content" maxlength="300" placeholder="写下你的留言"></textarea>
+                    </p>
+                    <button type="submit">提交留言</button>
+                </form>
+
+                <p id="msg-count" class="msg-count">共 {{ messages.length }} 条留言</p>
+                <p v-if="messages.length === 0">还没有留言，来写第一条吧。</p>
+                <ul id="msg-list">
+                    <li v-for="message in messages" :key="message.id">
+                        <strong>{{ message.nickname }}</strong>
+                        <p>{{ message.content }}</p>
+                        <button class="reset-btn" @click="deleteMessage(message.id)">删除留言</button>
+                    </li>
+                </ul>
             </section>
 
-            <aside class="sidebar">
-                <section id="about">
-                    <h2>关于我</h2>
-                    <figure class="avatar-figure">
-                        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%234a90d9'/%3E%3C/svg%3E"
-                            alt="头像">
-                        <figcaption>小明同学</figcaption>
-                    </figure>
-                    <p>一名大学生，正在学习Web前端开发。</p>
-                </section>
+            <!--注册表单实验不改造，保留原样，没有JS交互-->
+            <section class="register-section" id="register">
+                <h2>用户注册</h2>
+                <form id="reg-form">
+                    <p class="form-row"><label for="reg-name">用户名：</label><input type="text" id="reg-name"></p>
+                    <p class="form-row"><label for="reg-email">邮箱：</label><input type="text" id="reg-email"></p>
+                    <p class="form-row"><label for="reg-pwd">密码：</label><input type="password" id="reg-pwd"></p>
+                    <p class="form-row"><label for="reg-pwd2">确认密码：</label><input type="password" id="reg-pwd2"></p>
+                    <p id="reg-msg" class="form-msg"></p>
+                    <button type="submit">注册</button>
+                </form>
+            </section>
+        </main>
 
-                <section>
-                    <h2>文章分类</h2>
-                    <ul class="category-list">
-                        <li><a href="#">前端开发</a></li>
-                        <li><a href="#">学习笔记</a></li>
-                        <li><a href="#">生活随笔</a></li>
-                        <li><a href="#">技术分享</a></li>
-                    </ul>
-                </section>
-
-                <section>
-                    <h2>标签</h2>
-                    <ul class="tags">
-                        <li><a href="#">HTML5</a></li>
-                        <li><a href="#">CSS3</a></li>
-                        <li><a href="#">Flex</a></li>
-                        <li><a href="#">语义化</a></li>
-                    </ul>
-                </section>
-            </aside>
-        </div>
-
-        <!-- 留言板：提交后由 script.js 保存到本地，并显示全部留言与数量 -->
-        <section class="message-section" id="message">
-            <h2>留言板</h2>
-            <form id="msg-form">
-                <p class="form-row">
-                    <input type="text" id="msg-name" placeholder="你的昵称">
-                </p>
-                <p class="form-row">
-                    <textarea id="msg-text" placeholder="写下你的留言"></textarea>
-                </p>
-                <button type="submit">提交留言</button>
-            </form>
-            <p id="msg-count" class="msg-count"></p>
-            <ul id="msg-list"></ul>
-        </section>
-
-        <!-- 注册表单：由 script.js 完成用户名、邮箱、两次密码一致性校验 -->
-        <section class="register-section" id="register">
-            <h2>用户注册</h2>
-            <form id="reg-form">
-                <p class="form-row"><label for="reg-name">用户名：</label><input type="text" id="reg-name"></p>
-                <p class="form-row"><label for="reg-email">邮箱：</label><input type="text" id="reg-email"></p>
-                <p class="form-row"><label for="reg-pwd">密码：</label><input type="password" id="reg-pwd"></p>
-                <p class="form-row"><label for="reg-pwd2">确认密码：</label><input type="password" id="reg-pwd2"></p>
-                <p id="reg-msg" class="form-msg"></p>
-                <button type="submit">注册</button>
-            </form>
-        </section>
-    </main>
-
-    <footer class="site-footer">
-        <p>&copy; 2026 我的博客</p>
-    </footer>
-
-    <script src="script.js"></script>
+        <footer class="site-footer">
+            <p>&copy; 2026 我的博客</p>
+        </footer>
+    </div>
+    <!-- ✅删掉原来的 <script src="script.js"></script> ，已经废弃 -->
+    <script>
+        //✅完整Vue实例，实验要求选项式API
+        Vue.createApp({
+            data() {
+                return {
+                    articles: [
+                        {
+                            id: 1,
+                            date: "2026‑09‑01",
+                            title: "我的第一篇博客",
+                            summary: "用文字记录学习与生活，从一个小小的博客开始。没什么大道理，就是想找个地方写写日常、说说想法。以后会慢慢更新，记录普通人的小日子。路过的朋友，欢迎常来看看，一起聊聊。"
+                        },
+                        {
+                            id: 2,
+                            date: "2026‑09‑03",
+                            title: "用HTML搭建文章结构",
+                            summary: "先让内容有清晰的结构，再考虑页面的外观。先内容后样式，由外到内分层写，每步都在浏览器里验证。"
+                        },
+                        {
+                            id: 3,
+                            date: "2026‑09‑05",
+                            title: "CSS选择器学习笔记",
+                            summary: "学习基础CSS选择器，掌握元素、类、id选择器的使用场景。"
+                        },
+                        {
+                            id: 4,
+                            date: "2026‑09‑08",
+                            title: "JavaScript入门练习",
+                            summary: "练习基础JS变量、循环、条件判断，理解网页交互逻辑。"
+                        }
+                    ],
+                    keyword: "",
+                    searchFeedback: "尚未输入搜索关键词。",
+                    nickname: "",
+                    content: "",
+                    messages: [],
+                    nextMsgId: 1
+                }
+            },
+            computed: {
+                filteredArticles() {
+                    if (!this.keyword.trim()) {
+                        return this.articles;
+                    }
+                    return this.articles.filter(item => item.title.includes(this.keyword))
+                }
+            },
+            watch: {
+                keyword(newValue) {
+                    if (newValue.trim() === "") {
+                        this.searchFeedback = "尚未输入搜索关键词。";
+                    } else {
+                        this.searchFeedback = `当前搜索关键词：${newValue}`;
+                    }
+                }
+            },
+            methods: {
+                resetSearch() {
+                    this.keyword = "";
+                },
+                addMessage() {
+                    const nick = this.nickname.trim();
+                    const cnt = this.content.trim();
+                    if (!nick || !cnt) {
+                        alert("昵称和留言内容不能为空！");
+                        return;
+                    }
+                    this.messages.push({
+                        id: this.nextMsgId++,
+                        nickname: nick,
+                        content: cnt
+                    })
+                    this.nickname = "";
+                    this.content = "";
+                    this.$refs.nicknameInput.focus();
+                },
+                deleteMessage(delId) {
+                    this.messages = this.messages.filter(m => m.id !== delId);
+                }
+            }
+        }).mount("#app"); //挂载到根div#app
+    </script>
 </body>
 
 </html>
