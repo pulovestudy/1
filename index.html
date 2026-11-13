@@ -28,6 +28,7 @@
                         <li><a href="#articles">文章</a></li>
                         <li><a href="#about">关于我</a></li>
                         <li><a href="#message">留言</a></li>
+                        
                     </ul>
                 </nav>
                 <button id="skin-btn" class="skin-btn">更换皮肤</button>
@@ -110,6 +111,7 @@
                         </ul>
                     </section>
 
+                    
                     <section>
                         <h2>标签</h2>
                         <ul class="tags">
@@ -197,6 +199,7 @@
                             title: "JavaScript入门练习",
                             summary: "练习基础JS变量、循环、条件判断，理解网页交互逻辑。"
                         }
+                        
                     ],
                     keyword: "",
                     searchFeedback: "尚未输入搜索关键词。",
@@ -247,7 +250,9 @@
                     this.messages = this.messages.filter(m => m.id !== delId);
                 }
             }
+            
         }).mount("#app"); //挂载到根div#app
+        
     </script>
 </body>
 
